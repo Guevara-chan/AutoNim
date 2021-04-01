@@ -4,8 +4,8 @@ It was inspired and partially based on one and only existing [attempt](https://g
 
 # •Featuræ•
 * Simulate keystrokes and mouse movements.
-* Manipulate windows and processes.
 * Interact with all standard windows controls.
+* Manipulate windows and processes.
 
 # •Remark•
 **AutoNim** was designed as 1-to-1 headers conversion, so refer [official documentation](https://www.autoitscript.com/autoit3/docs/functions.htm) to learn how it *should* work.  

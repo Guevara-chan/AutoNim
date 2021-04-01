@@ -1,36 +1,17 @@
-## > ◈-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-◈
-## > | Remade in 2021 by Victoria A. Guevara  |
-## > ◈-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-◈
-
-## Little wrapper for AutoItX3 in nim-lang
-## testet with autoit-v3.3.14.2
-## more infos:
-##  https://www.autoitscript.com/site/autoit/
-## docs:
-##  https://www.autoitscript.com/autoit3/docs/
-##
-## Place the AutoItX3.dll next to this file.
-##
-## use the proc `L` to fill the functions like so:
-##  L"my nice string"
-
 #/////////////////////////////////////////////////////////////////////////////
 #
-# AutoItX v3
+# AutoItX v3 (2016) -> AutoNim (2021)
 #
-# Copyright (C)1999-2013:
+# Copyright (C)1999-2021:
 #		- Jonathan Bennett <jon at autoitscript dot com>
-#		- See "AUTHORS.txt" for contributors.
-#
-# This file is part of AutoItX.  Use of this file and the AutoItX DLL is subject
-# to the terms of the AutoItX license details of which can be found in the helpfile.
-#
-# When using the AutoItX3.dll as a standard DLL this file contains the definitions,
-# and function declarations required to use the DLL and AutoItX3_DLL.lib file.
+#       - Victoria Guevara <vk dot com slash guevara_chan>
 #
 #/////////////////////////////////////////////////////////////////////////////
 
+#/////////////////////////////////////////////////////////////////////////////
 # Definitions
+#/////////////////////////////////////////////////////////////////////////////
+
 const
     auINTDEFAULT*  = (- 2147483647) # "Default" value for _some_ int parameters (largest negative number)
     SW_SHOWNORMAL* = 1
@@ -41,20 +22,10 @@ type
 
     Point* = object
         x, y: int16
-#
-# nBufSize
-# When used for specifying the size of a resulting string buffer this is the number of CHARACTERS
-# in that buffer, including the null terminator.  For example:
-#
-# WCHAR szBuffer[10];
-# auClipGet(szBuffer, 10);
-#
-# The resulting string will be truncated at 9 characters with the the terminating null in the 10th.
-#
+
 #/////////////////////////////////////////////////////////////////////////////
 # Exported functions
 #/////////////////////////////////////////////////////////////////////////////
-
 
 const dllname = when sizeof(int) == 8: "AutoItX3_x64.dll" else: "AutoItX3.dll"
 {.pragma: AutoIt, cdecl, discardable, dynlib: dllname}

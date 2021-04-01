@@ -19,7 +19,7 @@ auWinWaitActive "[Class:Notepad]"
 let notepad = auWinGetProcess("[Class:Notepad]")
 
 # Send some words
-auSend("Hello, world")
+auSend "Hello, world"
 
 # Drag the mouse cursor to select
 auOpt "MouseCoordMode", 2

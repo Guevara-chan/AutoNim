@@ -236,11 +236,11 @@ proc auWinGetPos*(szTitle: string; szText: string; lpRect: Rect): int {.inline d
     auWinGetPos_proto(szTitle.newWideCString, szText.newWideCString, lpRect)
 proc auWinGetPosByHandle*(hWnd: int; lpRect: Rect): int {.AutoIt, importc: "AU3_WinGetPosByHandle"}
 proc auWinGetProcess_proto(szTitle: WideCString; szText: WideCString): int32 {.AutoIt, importc: "AU3_WinGetProcess"}
-proc auWinGetProcess*(szTitle: string; szText: string): int32 {.inline discardable.} = 
+proc auWinGetProcess*(szTitle: string; szText = ""): int32 {.inline discardable.} = 
     auWinGetProcess_proto(szTitle.newWideCString, szText.newWideCString) 
 proc auWinGetProcessByHandle*(hWnd: int): int32 {.AutoIt, importc: "AU3_WinGetProcessByHandle"}
 proc auWinGetState_proto(szTitle: WideCString; szText: WideCString): int {.AutoIt, importc: "AU3_WinGetState"}
-proc auWinGetState*(szTitle: string; szText: string): int {.inline discardable.} = 
+proc auWinGetState*(szTitle: string; szText = ""): int {.inline discardable.} = 
     auWinGetState_proto(szTitle.newWideCString, szText.newWideCString) 
 proc auWinGetStateByHandle*(hWnd: int): int {.AutoIt, importc: "AU3_WinGetStateByHandle"}
 proc auWinGetText_proto(szTitle: WideCString; szText: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetText"}

@@ -1,6 +1,7 @@
-# •Sum•
+# •Sum• [![nimble](https://raw.githubusercontent.com/yglukhov/nimble-tag/master/nimble.png)](https://github.com/yglukhov/nimble-tag)
 **AutoNim** is a quick & somewhat dirty wrapper of [AutoIt V3](https://www.autoitscript.com/site/) public API for [Nim](http://nim-lang.org).  
-It was inspired and partially based on one and only existing [attempt](https://github.com/enthus1ast/nimau3) to do it already by enthus1ast.
+It was inspired and partially based on one and only existing [attempt](https://github.com/enthus1ast/nimau3) to do it already by enthus1ast.  
+**Installation:** run `nimble install autonim` in terminal.  
 
 # •Featuræ•
 * Simulate keystrokes and mouse movements.

@@ -90,10 +90,16 @@ proc auControlGetHandle*(hWnd: int; szControl: string): int {.inline discardable
 proc auControlGetHandleAsText_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetHandleAsText"}
 proc auControlGetHandleAsText*(szTitle: string; szText: string; szControl: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
     auControlGetHandleAsText_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, szRetText.newWideCString, nBufSize)
-proc auControlGetPos_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; lpRect: Rect): int {.AutoIt, importc: "AU3_ControlGetPos"}
-proc auControlGetPos*(szTitle: string; szText: string; szControl: string; lpRect: Rect): int {.inline discardable.} = 
-    auControlGetPos_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, lpRect)
-proc auControlGetPosByHandle*(hWnd: int; hCtrl: int; lpRect: Rect): int {.AutoIt, importc: "AU3_ControlGetPosByHandle"}
+proc auControlGetPos_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; lpRect: pointer): int {.AutoIt, importc: "AU3_ControlGetPos"}
+proc auControlGetPos*(szTitle: string; szText: string; szControl: string): Rect {.inline discardable.} = 
+    var rect: Rect
+    auControlGetPos_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, rect.addr)
+    return rect
+proc auControlGetPosByHandle_proto(hWnd: int; hCtrl: int; lpRect: pointer): int {.AutoIt, importc: "AU3_ControlGetPosByHandle"}
+proc auControlGetPosByHandle*(hWnd: int; hCtrl: int): Rect {.inline discardable.} = 
+    var rect: Rect
+    auControlGetPosByHandle_proto(hWnd, hCtrl, rect.addr)
+    return rect
 proc auControlGetText_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szControlText: pointer; nBufSize: int): int {.AutoIt, importc: "AU3_ControlGetText"}
 proc auControlGetText*(szTitle: string; szText: string; szControl: string): string {.inline discardable.} = 
     var buffer: array[MAX_BUF, Utf16Char]

@@ -19,10 +19,10 @@ const
 
 type
     Rect*  = object
-        left, top, right, bottom: int16
+        left*, top*, right*, bottom*: int16
 
     Point* = object
-        x, y: int16
+        x*, y*: int16
 
 #/////////////////////////////////////////////////////////////////////////////
 # Exported functions
@@ -242,10 +242,16 @@ proc auWinGetHandle*(szTitle: string; szText = ""): int {.inline discardable.} =
 proc auWinGetHandleAsText_proto(szTitle: WideCString; szText: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetHandleAsText"}
 proc auWinGetHandleAsText*(szTitle: string; szText: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
     auWinGetHandleAsText_proto(szTitle.newWideCString, szText.newWideCString, szRetText.newWideCString, nBufSize)
-proc auWinGetPos_proto(szTitle: WideCString; szText: WideCString; lpRect: Rect): int {.AutoIt, importc: "AU3_WinGetPos"}
-proc auWinGetPos*(szTitle: string; szText: string; lpRect: Rect): int {.inline discardable.} = 
-    auWinGetPos_proto(szTitle.newWideCString, szText.newWideCString, lpRect)
-proc auWinGetPosByHandle*(hWnd: int; lpRect: Rect): int {.AutoIt, importc: "AU3_WinGetPosByHandle"}
+proc auWinGetPos_proto(szTitle: WideCString; szText: WideCString; lpRect: pointer): int {.AutoIt, importc: "AU3_WinGetPos"}
+proc auWinGetPos*(szTitle: string; szText = ""): Rect {.inline discardable.} = 
+    var rect: Rect
+    auWinGetPos_proto(szTitle.newWideCString, szText.newWideCString, rect.addr)
+    return rect
+proc auWinGetPosByHandle_proto(hWnd: int; lpRect: pointer): int {.AutoIt, importc: "AU3_WinGetPosByHandle"}
+proc auWinGetPosByHandle*(hWnd: int): Rect {.inline discardable.} = 
+    var rect: Rect
+    auWinGetPosByHandle_proto(hWnd, rect.addr)
+    return rect
 proc auWinGetProcess_proto(szTitle: WideCString; szText: WideCString): int32 {.AutoIt, importc: "AU3_WinGetProcess"}
 proc auWinGetProcess*(szTitle: string; szText = ""): int32 {.inline discardable.} = 
     auWinGetProcess_proto(szTitle.newWideCString, szText.newWideCString) 

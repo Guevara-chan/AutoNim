@@ -162,7 +162,11 @@ proc auMouseDown_proto(szButton: WideCString) {.AutoIt, importc: "AU3_MouseDown"
 proc auMouseDown*(szButton: string) {.inline discardable.} = 
     auMouseDown_proto(szButton.newWideCString) 
 proc auMouseGetCursor*(): int {.AutoIt, importc: "AU3_MouseGetCursor"}
-proc auMouseGetPos*(lpPoint: Point) {.AutoIt, importc: "AU3_MouseGetPos"}
+proc auMouseGetPos_proto(lpPoint: pointer) {.AutoIt, importc: "AU3_MouseGetPos"}
+proc auMouseGetPos*(): Point {.inline discardable.} = 
+    var point: Point
+    auMouseGetPos_proto(point.addr)
+    return point
 proc auMouseMove*(nX: int; nY: int; nSpeed: int = - 1): int {.AutoIt, importc: "AU3_MouseMove"}
 proc auMouseUp_proto(szButton: WideCString) {.AutoIt, importc: "AU3_MouseUp"}
 proc auMouseUp*(szButton: string) {.inline discardable.} = 

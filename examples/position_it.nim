@@ -20,14 +20,15 @@ auWinMove "[CLASS:Notepad]", "", 0, 0, 200, 200
 auControlCommand("[CLASS:Notepad]", "", "Edit1", "EditPaste", "I like to move it !")
 
 # Move to initial position.
-5000.sleep()
+3000.sleep()
 auWinMoveByHandle hWnd, def_pos.x, def_pos.y, def_pos.width, def_pos.height
 auControlCommand("[CLASS:Notepad]", "", "Edit1", "EditPaste", " Move it !")
 
 # Position mouse to center of Notepad window.
+let mouse_pos = auMouseGetPos()
 auMouseMove(def_pos.x + def_pos.width div 2, def_pos.y + def_pos.height div 2)
 auWinSetStatebyHandle(hwnd, 3)
 
 # Kill it finally.
-1000.sleep()
+auMouseMove(mouse_pos.x, mouse_pos.y)
 auWinKillByHandle hwnd

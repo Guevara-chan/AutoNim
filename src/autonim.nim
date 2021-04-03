@@ -260,7 +260,7 @@ proc auWinKill*(szTitle: string; szText = ""): int {.inline discardable.} =
     auWinKill_proto(szTitle.newWideCString, szText.newWideCString) 
 proc auWinKillByHandle*(hWnd: int): int {.AutoIt, importc: "AU3_WinKillByHandle"}
 proc auWinMenuSelectItem_proto(szTitle: WideCString; szText: WideCString; szItem1: WideCString; szItem2: WideCString; szItem3: WideCString; szItem4: WideCString; szItem5: WideCString; szItem6: WideCString; szItem7: WideCString; szItem8: WideCString): int {.AutoIt, importc: "AU3_WinMenuSelectItem"}
-proc auWinMenuSelectItem*(szTitle: string; szText: string; szItem1: string; szItem2: string; szItem3: string; szItem4: string; szItem5: string; szItem6: string; szItem7: string; szItem8: string): int {.inline discardable.} = 
+proc auWinMenuSelectItem*(szTitle: string; szText: string; szItem1: string; szItem2 = ""; szItem3 = ""; szItem4 = ""; szItem5 = ""; szItem6 = ""; szItem7 = ""; szItem8 = ""): int {.inline discardable.} = 
     auWinMenuSelectItem_proto(szTitle.newWideCString, szText.newWideCString, szItem1.newWideCString, szItem2.newWideCString, szItem3.newWideCString, szItem4.newWideCString, szItem5.newWideCString, szItem6.newWideCString, szItem7.newWideCString, szItem8.newWideCString) 
 proc auWinMenuSelectItemByHandle_proto(hWnd: int; szItem1: WideCString; szItem2: WideCString; szItem3: WideCString; szItem4: WideCString; szItem5: WideCString; szItem6: WideCString; szItem7: WideCString; szItem8: WideCString): int {.AutoIt, importc: "AU3_WinMenuSelectItemByHandle"}
 proc auWinMenuSelectItemByHandle*(hWnd: int; szItem1: string; szItem2: string; szItem3: string; szItem4: string; szItem5: string; szItem6: string; szItem7: string; szItem8: string): int {.inline discardable.} = 

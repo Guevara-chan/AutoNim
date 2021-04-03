@@ -19,10 +19,10 @@ const
 
 type
     Rect*  = object
-        left*, top*, right*, bottom*: int16
+        x*, y*, width*, height*: int32
 
     Point* = object
-        x*, y*: int16
+        x*, y*: int32
 
 #/////////////////////////////////////////////////////////////////////////////
 # Exported functions
@@ -94,11 +94,13 @@ proc auControlGetPos_proto(szTitle: WideCString; szText: WideCString; szControl:
 proc auControlGetPos*(szTitle: string; szText: string; szControl: string): Rect {.inline discardable.} = 
     var rect: Rect
     auControlGetPos_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, rect.addr)
+    rect.width -= rect.x; rect.height -= rect.y
     return rect
 proc auControlGetPosByHandle_proto(hWnd: int; hCtrl: int; lpRect: pointer): int {.AutoIt, importc: "AU3_ControlGetPosByHandle"}
 proc auControlGetPosByHandle*(hWnd: int; hCtrl: int): Rect {.inline discardable.} = 
     var rect: Rect
     auControlGetPosByHandle_proto(hWnd, hCtrl, rect.addr)
+    rect.width -= rect.x; rect.height -= rect.y
     return rect
 proc auControlGetText_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szControlText: pointer; nBufSize: int): int {.AutoIt, importc: "AU3_ControlGetText"}
 proc auControlGetText*(szTitle: string; szText: string; szControl: string): string {.inline discardable.} = 
@@ -238,10 +240,16 @@ proc auWinGetClassList*(szTitle: string; szText: string; szRetText: string; nBuf
 proc auWinGetClassListByHandle_proto(hWnd: int; szRetText: WideCString; nBufSize: int) {. AutoIt, importc: "AU3_WinGetClassListByHandle"}
 proc auWinGetClassListByHandle*(hWnd: int; szRetText: string; nBufSize: int) {.inline discardable.} = 
     auWinGetClassListByHandle_proto(hWnd, szRetText.newWideCString, nBufSize)
-proc auWinGetClientSize_proto(szTitle: WideCString; szText: WideCString; lpRect: Rect): int {. AutoIt, importc: "AU3_WinGetClientSize"}
-proc auWinGetClientSize*(szTitle: string; szText: string; lpRect: Rect): int {.inline discardable.} = 
-    auWinGetClientSize_proto(szTitle.newWideCString, szText.newWideCString, lpRect)
-proc auWinGetClientSizeByHandle*(hWnd: int; lpRect: Rect): int {.AutoIt, importc: "AU3_WinGetClientSizeByHandle"}
+proc auWinGetClientSize_proto(szTitle: WideCString; szText: WideCString; lpRect: pointer): int {. AutoIt, importc: "AU3_WinGetClientSize"}
+proc auWinGetClientSize*(szTitle: string; szText = ""): Rect {.inline discardable.} = 
+    var rect: Rect
+    auWinGetClientSize_proto(szTitle.newWideCString, szText.newWideCString, rect.addr)
+    return rect
+proc auWinGetClientSizeByHandle_proto(hWnd: int; lpRect: pointer): int {.AutoIt, importc: "AU3_WinGetClientSizeByHandle"}
+proc auWinGetClientSizeByHandle*(hWnd: int): Rect {.inline discardable.} = 
+    var rect: Rect
+    auWinGetClientSizeByHandle_proto(hWnd, rect.addr)
+    return rect
 proc auWinGetHandle_proto(szTitle: WideCString; szText: WideCString): int {.AutoIt, importc: "AU3_WinGetHandle"}
 proc auWinGetHandle*(szTitle: string; szText = ""): int {.inline discardable.} = 
     auWinGetHandle_proto(szTitle.newWideCString, szText.newWideCString) 
@@ -252,11 +260,13 @@ proc auWinGetPos_proto(szTitle: WideCString; szText: WideCString; lpRect: pointe
 proc auWinGetPos*(szTitle: string; szText = ""): Rect {.inline discardable.} = 
     var rect: Rect
     auWinGetPos_proto(szTitle.newWideCString, szText.newWideCString, rect.addr)
+    rect.width -= rect.x; rect.height -= rect.y
     return rect
 proc auWinGetPosByHandle_proto(hWnd: int; lpRect: pointer): int {.AutoIt, importc: "AU3_WinGetPosByHandle"}
 proc auWinGetPosByHandle*(hWnd: int): Rect {.inline discardable.} = 
     var rect: Rect
     auWinGetPosByHandle_proto(hWnd, rect.addr)
+    rect.width -= rect.x; rect.height -= rect.y
     return rect
 proc auWinGetProcess_proto(szTitle: WideCString; szText: WideCString): int32 {.AutoIt, importc: "AU3_WinGetProcess"}
 proc auWinGetProcess*(szTitle: string; szText = ""): int32 {.inline discardable.} = 

@@ -148,15 +148,19 @@ proc auControlTreeView*(szTitle: string; szText: string; szControl: string; szCo
 proc auControlTreeViewByHandle_proto(hWnd: int; hCtrl: int; szCommand: WideCString; szExtra1: WideCString; szExtra2: WideCString; szResult: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlTreeViewByHandle"}
 proc auControlTreeViewByHandle*(hWnd: int; hCtrl: int; szCommand: string; szExtra1: string; szExtra2: string; szResult: string; nBufSize: int) {.inline discardable.} = 
     auControlTreeViewByHandle_proto(hWnd, hCtrl, szCommand.newWideCString, szExtra1.newWideCString, szExtra2.newWideCString, szResult.newWideCString, nBufSize)
-proc auDriveMapAdd_proto(szDevice: WideCString; szShare: WideCString; nFlags: int; szUser: WideCString; szPwd: WideCString; szResult: WideCString; nBufSize: int) {. AutoIt, importc: "AU3_DriveMapAdd"}
-proc auDriveMapAdd*(szDevice: string; szShare: string; nFlags: int; szUser: string; szPwd: string; szResult: string; nBufSize: int) {.inline discardable.} = 
-    auDriveMapAdd_proto(szDevice.newWideCString, szShare.newWideCString, nFlags, szUser.newWideCString, szPwd.newWideCString, szResult.newWideCString, nBufSize)
+proc auDriveMapAdd_proto(szDevice: WideCString; szShare: WideCString; nFlags: int; szUser: WideCString; szPwd: WideCString; szResult: pointer; nBufSize: int) {. AutoIt, importc: "AU3_DriveMapAdd"}
+proc auDriveMapAdd*(szDevice: string; szShare: string; nFlags: int; szUser: string; szPwd: string): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auDriveMapAdd_proto(szDevice.newWideCString, szShare.newWideCString, nFlags, szUser.newWideCString, szPwd.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auDriveMapDel_proto(szDevice: WideCString): int {.AutoIt, importc: "AU3_DriveMapDel"}
 proc auDriveMapDel*(szDevice: string): int {.inline discardable.} = 
     auDriveMapDel_proto(szDevice.newWideCString) 
-proc auDriveMapGet_proto(szDevice: WideCString; szMapping: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_DriveMapGet"}
-proc auDriveMapGet*(szDevice: string; szMapping: string; nBufSize: int) {.inline discardable.} = 
-    auDriveMapGet_proto(szDevice.newWideCString, szMapping.newWideCString, nBufSize)
+proc auDriveMapGet_proto(szDevice: WideCString; szMapping: pointer; nBufSize: int) {.AutoIt, importc: "AU3_DriveMapGet"}
+proc auDriveMapGet*(szDevice: string): string{.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auDriveMapGet_proto(szDevice.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auIsAdmin*(): int {.AutoIt, importc: "AU3_IsAdmin"}
 proc auMouseClick_proto(szButton: WideCString; nX: int = auINTDEFAULT; nY: int = auINTDEFAULT; nClicks: int = 1; nSpeed: int = - 1): int {. AutoIt, importc: "AU3_MouseClick"}
 proc auMouseClick*(szButton: string; nX: int = auINTDEFAULT; nY: int = auINTDEFAULT; nClicks: int = 1; nSpeed: int = - 1): int {.inline discardable.} = 
@@ -224,12 +228,16 @@ proc auSend*(szSendText: string; nMode: int = 0) {.inline discardable.} =
     auSend_proto(szSendText.newWideCString, nMode)
 proc auShutdown*(nFlags: int): int {.AutoIt, importc: "AU3_Shutdown"}
 proc auSleep*(nMilliseconds: int) {.AutoIt, importc: "AU3_Sleep"}
-proc auStatusbarGetText_proto(szTitle: WideCString; szText: WideCString; nPart: int; szStatusText: WideCString; nBufSize: int): int {.AutoIt, importc: "AU3_StatusbarGetText"}
-proc auStatusbarGetText*(szTitle: string; szText: string; nPart: int; szStatusText: string; nBufSize: int): int {.inline discardable.} = 
-    auStatusbarGetText_proto(szTitle.newWideCString, szText.newWideCString, nPart, szStatusText.newWideCString, nBufSize)
-proc auStatusbarGetTextByHandle_proto(hWnd: int; nPart: int; szStatusText: WideCString; nBufSize: int): int {.AutoIt, importc: "AU3_StatusbarGetTextByHandle"}
-proc auStatusbarGetTextByHandle*(hWnd: int; nPart: int; szStatusText: string; nBufSize: int): int {.inline discardable.} = 
-    auStatusbarGetTextByHandle_proto(hWnd, nPart, szStatusText.newWideCString, nBufSize)
+proc auStatusbarGetText_proto(szTitle: WideCString; szText: WideCString; nPart: int; szStatusText: pointer; nBufSize: int): int {.AutoIt, importc: "AU3_StatusbarGetText"}
+proc auStatusbarGetText*(szTitle: string; szText = ""; nPart: int = 1): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auStatusbarGetText_proto(szTitle.newWideCString, szText.newWideCString, nPart, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
+proc auStatusbarGetTextByHandle_proto(hWnd: int; nPart: int; szStatusText: pointer; nBufSize: int): int {.AutoIt, importc: "AU3_StatusbarGetTextByHandle"}
+proc auStatusbarGetTextByHandle*(hWnd: int; nPart: int = 1): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auStatusbarGetTextByHandle_proto(hWnd, nPart, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auToolTip_proto(szTip: WideCString; nX: int = auINTDEFAULT; nY: int = auINTDEFAULT) {. AutoIt, importc: "AU3_ToolTip"}
 proc auToolTip*(szTip: string; nX: int = auINTDEFAULT; nY: int = auINTDEFAULT) {.inline discardable.} = 
     auToolTip_proto(szTip.newWideCString, nX, nY)

@@ -18,10 +18,10 @@ const
     MAX_BUF        = 65536
 
 type
-    Rect*  = object
+    Rect* {.final, pure.} = object
         x*, y*, width*, height*: int32
 
-    Point* = object
+    Point* {.final, pure.} = object
         x*, y*: int32
 
 #/////////////////////////////////////////////////////////////////////////////
@@ -180,6 +180,12 @@ proc auOpt*(szOption: string; nValue: int): int {.inline discardable.} =
 proc auPixelChecksum*(lpRect: Rect; nStep: int = 1): cuint {.AutoIt, importc: "AU3_PixelChecksum"}
 proc auPixelGetColor*(nX: int; nY: int): int {.AutoIt, importc: "AU3_PixelGetColor"}
 proc auPixelSearch*(lpRect: Rect; nCol: int; nVar: int; nStep: int; pPointResult: Point) {.AutoIt, importc: "AU3_PixelSearch"}
+# proc auPixelSearch_proto(lpRect: Rect; nCol: int; nVar: int; nStep: int; pPointResult: pointer) {.AutoIt, importc: "AU3_PixelSearch"}
+# proc auPixelSearch*(left, top, right, bottom: int32; nCol: int; nVar: int = 0; nStep: int = 1): Point {.inline discardable.} =
+#     var area = Rect(x: left, y: top, width: right, height: bottom)
+#     var point: Point
+#     auPixelSearch_proto area, nCol, nVar, nStep, point.addr
+#     return point
 proc auProcessClose_proto(szProcess: WideCString): int {.AutoIt, importc: "AU3_ProcessClose"}
 proc auProcessClose*(szProcess: string): int {.inline discardable.} = 
     auProcessClose_proto(szProcess.newWideCString) 
@@ -280,18 +286,26 @@ proc auWinGetState_proto(szTitle: WideCString; szText: WideCString): int {.AutoI
 proc auWinGetState*(szTitle: string; szText = ""): int {.inline discardable.} = 
     auWinGetState_proto(szTitle.newWideCString, szText.newWideCString) 
 proc auWinGetStateByHandle*(hWnd: int): int {.AutoIt, importc: "AU3_WinGetStateByHandle"}
-proc auWinGetText_proto(szTitle: WideCString; szText: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetText"}
-proc auWinGetText*(szTitle: string; szText: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetText_proto(szTitle.newWideCString, szText.newWideCString, szRetText.newWideCString, nBufSize)
-proc auWinGetTextByHandle_proto(hWnd: int; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetTextByHandle"}
-proc auWinGetTextByHandle*(hWnd: int; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetTextByHandle_proto(hWnd, szRetText.newWideCString, nBufSize)
-proc auWinGetTitle_proto(szTitle: WideCString; szText: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetTitle"}
-proc auWinGetTitle*(szTitle: string; szText: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetTitle_proto(szTitle.newWideCString, szText.newWideCString, szRetText.newWideCString, nBufSize)
-proc auWinGetTitleByHandle_proto(hWnd: int; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetTitleByHandle"}
-proc auWinGetTitleByHandle*(hWnd: int; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetTitleByHandle_proto(hWnd, szRetText.newWideCString, nBufSize)
+proc auWinGetText_proto(szTitle: WideCString; szText: WideCString; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetText"}
+proc auWinGetText*(szTitle: string; szText = ""): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auWinGetText_proto(szTitle.newWideCString, szText.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr)) 
+proc auWinGetTextByHandle_proto(hWnd: int; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetTextByHandle"}
+proc auWinGetTextByHandle*(hWnd: int): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auWinGetTextByHandle_proto(hWnd, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr)) 
+proc auWinGetTitle_proto(szTitle: WideCString; szText: WideCString; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetTitle"}
+proc auWinGetTitle*(szTitle: string; szText = ""): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auWinGetTitle_proto(szTitle.newWideCString, szText.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))    
+proc auWinGetTitleByHandle_proto(hWnd: int; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetTitleByHandle"}
+proc auWinGetTitleByHandle*(hWnd: int): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auWinGetTitleByHandle_proto(hWnd, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auWinKill_proto(szTitle: WideCString; szText: WideCString): int {.AutoIt, importc: "AU3_WinKill"}
 proc auWinKill*(szTitle: string; szText = ""): int {.inline discardable.} = 
     auWinKill_proto(szTitle.newWideCString, szText.newWideCString) 

@@ -244,12 +244,16 @@ proc auWinExists*(szTitle: string; szText = ""): int {.inline discardable.} =
     auWinExists_proto(szTitle.newWideCString, szText.newWideCString) 
 proc auWinExistsByHandle*(hWnd: int): int {.AutoIt, importc: "AU3_WinExistsByHandle"}
 proc auWinGetCaretPos*(lpPoint: Point): int {.AutoIt, importc: "AU3_WinGetCaretPos"}
-proc auWinGetClassList_proto(szTitle: WideCString; szText: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetClassList"}
-proc auWinGetClassList*(szTitle: string; szText: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetClassList_proto(szTitle.newWideCString, szText.newWideCString, szRetText.newWideCString, nBufSize)
-proc auWinGetClassListByHandle_proto(hWnd: int; szRetText: WideCString; nBufSize: int) {. AutoIt, importc: "AU3_WinGetClassListByHandle"}
-proc auWinGetClassListByHandle*(hWnd: int; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetClassListByHandle_proto(hWnd, szRetText.newWideCString, nBufSize)
+proc auWinGetClassList_proto(szTitle: WideCString; szText: WideCString; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetClassList"}
+proc auWinGetClassList*(szTitle: string; szText = ""): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auWinGetClassList_proto(szTitle.newWideCString, szText.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
+proc auWinGetClassListByHandle_proto(hWnd: int; szRetText: pointer; nBufSize: int) {. AutoIt, importc: "AU3_WinGetClassListByHandle"}
+proc auWinGetClassListByHandle*(hWnd: int): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auWinGetClassListByHandle_proto(hWnd, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auWinGetClientSize_proto(szTitle: WideCString; szText: WideCString; lpRect: pointer): int {. AutoIt, importc: "AU3_WinGetClientSize"}
 proc auWinGetClientSize*(szTitle: string; szText = ""): Rect {.inline discardable.} = 
     var rect: Rect
@@ -263,9 +267,11 @@ proc auWinGetClientSizeByHandle*(hWnd: int): Rect {.inline discardable.} =
 proc auWinGetHandle_proto(szTitle: WideCString; szText: WideCString): int {.AutoIt, importc: "AU3_WinGetHandle"}
 proc auWinGetHandle*(szTitle: string; szText = ""): int {.inline discardable.} = 
     auWinGetHandle_proto(szTitle.newWideCString, szText.newWideCString) 
-proc auWinGetHandleAsText_proto(szTitle: WideCString; szText: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_WinGetHandleAsText"}
-proc auWinGetHandleAsText*(szTitle: string; szText: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auWinGetHandleAsText_proto(szTitle.newWideCString, szText.newWideCString, szRetText.newWideCString, nBufSize)
+proc auWinGetHandleAsText_proto(szTitle: WideCString; szText: WideCString; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetHandleAsText"}
+proc auWinGetHandleAsText*(szTitle: string; szText = ""): string {.inline discardable.} =
+    var buffer: array[MAX_BUF, Utf16Char] 
+    auWinGetHandleAsText_proto(szTitle.newWideCString, szText.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auWinGetPos_proto(szTitle: WideCString; szText: WideCString; lpRect: pointer): int {.AutoIt, importc: "AU3_WinGetPos"}
 proc auWinGetPos*(szTitle: string; szText = ""): Rect {.inline discardable.} = 
     var rect: Rect

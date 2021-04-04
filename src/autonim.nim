@@ -78,18 +78,24 @@ proc auControlFocus_proto(szTitle: WideCString; szText: WideCString; szControl: 
 proc auControlFocus*(szTitle: string; szText: string; szControl: string): int {.inline discardable.} = 
     auControlFocus_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString) 
 proc auControlFocusByHandle*(hWnd: int; hCtrl: int): int {.AutoIt, importc: "AU3_ControlFocusByHandle"}
-proc auControlGetFocus_proto(szTitle: WideCString; szText: WideCString; szControlWithFocus: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetFocus"}
-proc auControlGetFocus*(szTitle: string; szText: string; szControlWithFocus: string; nBufSize: int) {.inline discardable.} = 
-    auControlGetFocus_proto(szTitle.newWideCString, szText.newWideCString, szControlWithFocus.newWideCString, nBufSize)
-proc auControlGetFocusByHandle_proto(hWnd: int; szControlWithFocus: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetFocusByHandle"}
-proc auControlGetFocusByHandle*(hWnd: int; szControlWithFocus: string; nBufSize: int) {.inline discardable.} = 
-    auControlGetFocusByHandle_proto(hWnd, szControlWithFocus.newWideCString, nBufSize)
+proc auControlGetFocus_proto(szTitle: WideCString; szText: WideCString; szControlWithFocus: pointer; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetFocus"}
+proc auControlGetFocus*(szTitle: string; szText = ""): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auControlGetFocus_proto(szTitle.newWideCString, szText.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
+proc auControlGetFocusByHandle_proto(hWnd: int; szControlWithFocus: pointer; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetFocusByHandle"}
+proc auControlGetFocusByHandle*(hWnd: int): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auControlGetFocusByHandle_proto(hWnd, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auControlGetHandle_proto(hWnd: int; szControl: WideCString): int {.AutoIt, importc: "AU3_ControlGetHandle"}
 proc auControlGetHandle*(hWnd: int; szControl: string): int {.inline discardable.} = 
     auControlGetHandle_proto(hWnd, szControl.newWideCString) 
-proc auControlGetHandleAsText_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szRetText: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetHandleAsText"}
-proc auControlGetHandleAsText*(szTitle: string; szText: string; szControl: string; szRetText: string; nBufSize: int) {.inline discardable.} = 
-    auControlGetHandleAsText_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, szRetText.newWideCString, nBufSize)
+proc auControlGetHandleAsText_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_ControlGetHandleAsText"}
+proc auControlGetHandleAsText*(szTitle: string; szText: string; szControl: string): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auControlGetHandleAsText_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auControlGetPos_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; lpRect: pointer): int {.AutoIt, importc: "AU3_ControlGetPos"}
 proc auControlGetPos*(szTitle: string; szText: string; szControl: string): Rect {.inline discardable.} = 
     var rect: Rect

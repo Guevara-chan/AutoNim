@@ -191,8 +191,8 @@ proc auMouseWheel*(szDirection: string; nClicks: int) {.inline discardable.} =
 proc auOpt_proto(szOption: WideCString; nValue: int): int {.AutoIt, importc: "AU3_Opt"}
 proc auOpt*(szOption: string; nValue: int): int {.inline discardable.} = 
     auOpt_proto(szOption.newWideCString, nValue)
-proc auPixelChecksum_proto*(lpRect: Rect; nStep: int = 1): uint32 {.AutoIt, importc: "AU3_PixelChecksum"}
-proc auPixelChecksum(left, top, right, bottom: int32, nStep: int = 1): uint32 {.inline discardable.}  =
+proc auPixelChecksum_proto(lpRect: Rect; nStep: int = 1): uint32 {.AutoIt, importc: "AU3_PixelChecksum"}
+proc auPixelChecksum*(left, top, right, bottom: int32, nStep: int = 1): uint32 {.inline discardable.}  =
     auPixelChecksum_proto Rect(x: left, y: top, width: right, height: bottom), nStep
 proc auPixelGetColor*(nX: int; nY: int): int {.AutoIt, importc: "AU3_PixelGetColor"}
 proc auPixelSearch*(lpRect: Rect; nCol: int; nVar: int; nStep: int; pPointResult: Point) {.AutoIt, importc: "AU3_PixelSearch"}

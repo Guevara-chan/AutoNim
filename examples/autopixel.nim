@@ -1,3 +1,7 @@
+## ◈-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-◈
+## | Basic pixel-level operations sample v0.1   |
+## | Developed in 2021 by Victoria A. Guevara   |
+## ◈-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-◈
 import "../src/autonim", strutils
 
 auInit()

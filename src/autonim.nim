@@ -60,12 +60,16 @@ proc auControlCommandByHandle*(hWnd: int; hCtrl: int; szCommand: string; szExtra
     var buffer: array[MAX_BUF, Utf16Char]
     auControlCommandByHandle_proto(hWnd, hCtrl, szCommand.newWideCString, szExtra.newWideCString, buffer[0].addr, buffer.len)
     return $(cast[WideCString](buffer[0].addr))
-proc auControlListView_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szCommand: WideCString; szExtra1: WideCString; szExtra2: WideCString; szResult: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlListView"}
-proc auControlListView*(szTitle: string; szText: string; szControl: string; szCommand: string; szExtra1: string; szExtra2: string; szResult: string; nBufSize: int) {.inline discardable.} = 
-    auControlListView_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, szCommand.newWideCString, szExtra1.newWideCString, szExtra2.newWideCString, szResult.newWideCString, nBufSize)
-proc auControlListViewByHandle_proto(hWnd: int; hCtrl: int; szCommand: WideCString; szExtra1: WideCString; szExtra2: WideCString; szResult: WideCString; nBufSize: int) {.AutoIt, importc: "AU3_ControlListViewByHandle"}
-proc auControlListViewByHandle*(hWnd: int; hCtrl: int; szCommand: string; szExtra1: string; szExtra2: string; szResult: string; nBufSize: int) {.inline discardable.} = 
-    auControlListViewByHandle_proto(hWnd, hCtrl, szCommand.newWideCString, szExtra1.newWideCString, szExtra2.newWideCString, szResult.newWideCString, nBufSize)
+proc auControlListView_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString; szCommand: WideCString; szExtra1: WideCString; szExtra2: WideCString; szResult: pointer; nBufSize: int) {.AutoIt, importc: "AU3_ControlListView"}
+proc auControlListView*(szTitle: string; szText: string; szControl: string; szCommand: string; szExtra1: string; szExtra2: string): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auControlListView_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString, szCommand.newWideCString, szExtra1.newWideCString, szExtra2.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
+proc auControlListViewByHandle_proto(hWnd: int; hCtrl: int; szCommand: WideCString; szExtra1: WideCString; szExtra2: WideCString; szResult: pointer; nBufSize: int) {.AutoIt, importc: "AU3_ControlListViewByHandle"}
+proc auControlListViewByHandle*(hWnd: int; hCtrl: int; szCommand: string; szExtra1: string; szExtra2: string): string {.inline discardable.} = 
+    var buffer: array[MAX_BUF, Utf16Char]
+    auControlListViewByHandle_proto(hWnd, hCtrl, szCommand.newWideCString, szExtra1.newWideCString, szExtra2.newWideCString, buffer[0].addr, buffer.len)
+    return $(cast[WideCString](buffer[0].addr))
 proc auControlDisable_proto(szTitle: WideCString; szText: WideCString; szControl: WideCString): int {. AutoIt, importc: "AU3_ControlDisable"}
 proc auControlDisable*(szTitle: string; szText: string; szControl: string): int {.inline discardable.} = 
     auControlDisable_proto(szTitle.newWideCString, szText.newWideCString, szControl.newWideCString) 
@@ -187,7 +191,9 @@ proc auMouseWheel*(szDirection: string; nClicks: int) {.inline discardable.} =
 proc auOpt_proto(szOption: WideCString; nValue: int): int {.AutoIt, importc: "AU3_Opt"}
 proc auOpt*(szOption: string; nValue: int): int {.inline discardable.} = 
     auOpt_proto(szOption.newWideCString, nValue)
-proc auPixelChecksum*(lpRect: Rect; nStep: int = 1): cuint {.AutoIt, importc: "AU3_PixelChecksum"}
+proc auPixelChecksum_proto*(lpRect: Rect; nStep: int = 1): uint32 {.AutoIt, importc: "AU3_PixelChecksum"}
+proc auPixelChecksum(left, top, right, bottom: int32, nStep: int = 1): uint32 {.inline discardable.}  =
+    auPixelChecksum_proto Rect(x: left, y: top, width: right, height: bottom), nStep
 proc auPixelGetColor*(nX: int; nY: int): int {.AutoIt, importc: "AU3_PixelGetColor"}
 proc auPixelSearch*(lpRect: Rect; nCol: int; nVar: int; nStep: int; pPointResult: Point) {.AutoIt, importc: "AU3_PixelSearch"}
 # proc auPixelSearch_proto(lpRect: Rect; nCol: int; nVar: int; nStep: int; pPointResult: pointer) {.AutoIt, importc: "AU3_PixelSearch"}

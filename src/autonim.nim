@@ -257,7 +257,11 @@ proc auWinExists_proto(szTitle: WideCString; szText: WideCString): int {.AutoIt,
 proc auWinExists*(szTitle: string; szText = ""): int {.inline discardable.} = 
     auWinExists_proto(szTitle.newWideCString, szText.newWideCString) 
 proc auWinExistsByHandle*(hWnd: int): int {.AutoIt, importc: "AU3_WinExistsByHandle"}
-proc auWinGetCaretPos*(lpPoint: Point): int {.AutoIt, importc: "AU3_WinGetCaretPos"}
+proc auWinGetCaretPos_proto(lpPoint: pointer): int {.AutoIt, importc: "AU3_WinGetCaretPos"}
+proc auWinGetCaretPos(): Point {.inline discardable.} = 
+    var point: Point
+    auWinGetCaretPos_proto(point.addr)
+    return point
 proc auWinGetClassList_proto(szTitle: WideCString; szText: WideCString; szRetText: pointer; nBufSize: int) {.AutoIt, importc: "AU3_WinGetClassList"}
 proc auWinGetClassList*(szTitle: string; szText = ""): string {.inline discardable.} = 
     var buffer: array[MAX_BUF, Utf16Char]
